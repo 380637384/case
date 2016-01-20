@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title>刮刮卡</title>
+		<style type="text/css">
+			body,canvas{margin:0; padding:0; -webkit-user-select: none; user-select: none;}
+			canvas{background: transparent;}
+		</style>
+	</head>
+	<body>
+		<canvas id="" width="" height=""></canvas>
+		<script type="text/javascript">
+			window.onload=function(){
+				var cvs=document.querySelector("canvas");
+				//cvs.width=$(window).width();
+				//cvs.height=$(window).height();
+				var img=new Image();
+				var imgs=["images/p_0.jpg","images/p_1.jpg"];
+				var num=Math.floor(Math.random()*2);
+				img.src=imgs[num];
+				img.addEventListener("load",function(e){
+					var cvsobj;
+					var w=img.width;
+					var h=img.height;
+					var offsetX = cvs.offsetLeft,offsetY = cvs.offsetTop;
+					var mousedown = false;
+					function layer(cvsobj){
+						cvsobj.fillStyle="gray";
+						cvsobj.fillRect(0,0,w,h);
+					}
+					function eventDown(e){
+						e.preventDefault();
+						mousedown=true;
+					}
+					function eventUp(e){
+				        e.preventDefault();
+				        mousedown=false;
+				    }
+					function eventMove(e){
+					    e.preventDefault();
+					    if(mousedown) {
+					        	if(e.changedTouches){
+				                 e=e.changedTouches[0];
+				             }
+				             var x = (e.clientX || e.pageX) || 0,
+				                 y = (e.clientY || e.pageY) || 0;
+				                 
+				             with(cvsobj) {
+				                 beginPath()
+				                 arc(x, y, 10, 0, Math.PI * 2);
+				                 fill();
+				             }
+						}
+					}
+					cvs.width=w;
+    					cvs.height=h;
+    					cvs.style.backgroundImage='url('+img.src+')';
+					var cvsobj=cvs.getContext("2d");
+					cvsobj.fillStyle='transparent';
+    					cvsobj.fillRect(0, 0, w, h);
+					layer(cvsobj);
+					cvsobj.globalCompositeOperation = 'destination-out';
+					cvs.addEventListener('touchstart', eventDown);
+				    cvs.addEventListener('touchend', eventUp);
+				    cvs.addEventListener('touchmove', eventMove);
+				    cvs.addEventListener('mousedown', eventDown);
+				    cvs.addEventListener('mouseup', eventUp);
+				    cvs.addEventListener('mousemove', eventMove);
+				});
+			}
+		</script>
+		
+	</body>
+</html>
